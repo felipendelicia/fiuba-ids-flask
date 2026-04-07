@@ -1,0 +1,14 @@
+from flask import Flask
+
+from routes.partidos_routes import partidos_bp
+from routes.usuarios_routes import usuarios_bp
+from routes.ranking_routes import ranking_bp
+
+app = Flask(__name__)
+
+app.register_blueprint(partidos_bp, url_prefix='/partidos')
+app.register_blueprint(usuarios_bp, url_prefix='/usuarios')
+app.register_blueprint(ranking_bp, url_prefix='/ranking')
+
+if __name__ == '__main__':
+    app.run(debug=True, host='0.0.0.0', port=5000)
