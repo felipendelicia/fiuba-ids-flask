@@ -4,7 +4,7 @@
 
 ## Integrantes
 - Ronny Mamani Torrez 114779
-- Felipe Nahuel Delicia Padron
+- Felipe Nahuel Delicia 115775
 - Dante Apellidos Padron
 - Nombre Apellidos Padron
 - Nombre Apellidos Padron
