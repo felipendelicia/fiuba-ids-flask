@@ -84,4 +84,41 @@ def reemplazar_partido(id):
     return jsonify({"mensaje": "Partido reemplazado completo"}), 200
 
 def actualizar_partido_parcial(id):
-    return jsonify({"mensaje": "Partido actualizado parcialmente"}), 200
+    body = request.get_json()
+    
+    campos_validos = ['equipo_local', 'equipo_visitante', 'fecha', 'fase']
+    update = []
+
+    if not body:
+        return ERRORS["MISSING_REQUIRED_FIELDS"]("No mandaste ningún campo para actualizar el partido")
+
+    partido_response = obtener_partido(id)
+    if partido_response[1] != 200:
+        return partido_response
+    
+    if "fase" in body and body["fase"] not in FASES:
+        return ERRORS["INVALID_FORMAT"]("La fase no es válida")
+
+    # verifico que los campos a actualizar sean válidos y los agrego a la query de update
+    if "equipo_local" in body or "equipo_visitante" in body:
+
+        equipo_local_final = body.get("equipo_local") if body.get("equipo_local") else partido_response[0].get("equipo_local")
+        equipo_visitante_final = body.get("equipo_visitante") if body.get("equipo_visitante") else partido_response[0].get("equipo_visitante")
+        if equipo_local_final == equipo_visitante_final:
+            return ERRORS["CONFLICT"]("Los equipos no pueden ser iguales")
+    
+    for campo in campos_validos:
+        if campo in body:
+            update.append(f"{campo} = '{body[campo]}'")
+    
+    if len(update) == 0:
+        return ERRORS["MISSING_REQUIRED_FIELDS"]("No mandaste ningún campo para actualizar el partido")
+    
+    query = f"UPDATE partidos SET {', '.join(update)} WHERE id = {id}"
+
+    response = execute(query)
+
+    if response == False:
+        return ERRORS["UNKNOWN_ERROR"]("Error al actualizar el partido")
+    
+    return "", 204
