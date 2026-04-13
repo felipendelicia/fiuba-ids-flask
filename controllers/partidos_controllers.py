@@ -7,6 +7,9 @@ def listar_partidos():
 
 def crear_partido():
     # TODO: Leer body (equipo_local, equipo_visitante, fecha, fase)
+    body = request.get_json()
+    print(body)
+    
     return jsonify({"mensaje": "Partido creado"}), 201
 
 def obtener_partido(id):

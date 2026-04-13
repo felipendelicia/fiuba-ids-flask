@@ -23,7 +23,7 @@ CREATE TABLE IF NOT EXISTS partidos (
     fecha TIMESTAMP NOT NULL,
     goles_local INT DEFAULT NULL,
     goles_visitante INT DEFAULT NULL,
-    fase VARCHAR(50), -- 'Fase de grupos', 'Octavos', etc.
+    fase VARCHAR(50) NOT NULL, -- 'Fase de grupos', 'Octavos', etc.
     estadio VARCHAR(100),
 
     FOREIGN KEY (local_id) REFERENCES equipos(id) ON DELETE CASCADE,
