@@ -23,6 +23,21 @@ Este proyecto simula el funcionamiento de un fixture mundialista para el año 20
 
 En el directorio del proyecto:
 
+### Configurar variables de entorno
+
+- cp .env.example .env
+- Editar el archivo .env con las credenciales de la base de datos 
+
+### Crear un entorno virtual e instalar las dependencias
+
 - python3 -m venv .venv
 - . .venv/bin/activate
 - pip install -r requeriments.txt
+
+### Crear esquema de base de datos
+
+- sudo mysql < schema.sql
+
+### Ejecutar el servidor
+
+- flask run 
