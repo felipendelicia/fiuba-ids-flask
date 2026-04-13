@@ -18,3 +18,11 @@ Este proyecto simula el funcionamiento de un fixture mundialista para el año 20
 - Agregar partidos programados
 - Consulta de resultados de partidos
 - Realización de predicciones sobre los resultados de los partidos
+
+## Instalación
+
+En el directorio del proyecto:
+
+- python3 -m venv .venv
+- . .venv/bin/activate
+- pip install -r requeriments.txt
