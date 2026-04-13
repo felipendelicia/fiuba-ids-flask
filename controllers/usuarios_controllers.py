@@ -27,6 +27,7 @@ def crear_usuario():
     query = f"INSERT INTO usuarios (nombre, email) VALUES ('{nombre}', '{email}')"
     response = execute(query)
     if response == False: return ERRORS["UNKNOWN_ERROR"]("Error al crear usuario")
+    
     return "", 201
     
 def listar_usuarios():

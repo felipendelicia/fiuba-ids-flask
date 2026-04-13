@@ -18,9 +18,9 @@ def get_db_connection():
     return conn
 
 
-def execute(query):
+def execute(query:str)->list:
     conexion = get_db_connection()
-    cursor = conexion.cursor(dictionary=True) # dictionary=True para que devuelva dicts en vez de tuplas
+    cursor = conexion.cursor(dictionary=True, buffered=True) # dictionary=True para que devuelva dicts en vez de tuplas
     try:
         cursor.execute(query)
         conexion.commit()
@@ -35,4 +35,3 @@ def execute(query):
         conexion.close()
 
     return resultados
-
