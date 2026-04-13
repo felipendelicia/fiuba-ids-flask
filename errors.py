@@ -61,4 +61,19 @@ ERRORS = {
         ),
         500,
     ),
+    "NOT_FOUND": lambda message: (
+        jsonify(
+            {
+                "errors": [
+                    {
+                        "code": 404,
+                        "message": message,
+                        "level": "error",
+                        "description": "Registro no encontrado, capo",
+                    }
+                ]
+            }
+        ),
+        404,
+    ),
 }

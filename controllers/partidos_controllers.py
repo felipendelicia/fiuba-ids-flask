@@ -2,6 +2,8 @@ from flask import request, jsonify
 from constants import FASES
 from errors import ERRORS
 
+from controllers.usuarios_controllers import obtener_usuario
+
 from db import execute
 
 def listar_partidos():
@@ -42,10 +44,41 @@ def cargar_resultado(id):
     # TODO: Leer body (goles_local, goles_visitante) y actualizar DB 
     return jsonify({"mensaje": "Resultado actualizado"}), 200
 
-def registrar_prediccion(id):
+def registrar_prediccion(id:int):
     # TODO: Validar que el partido no se haya jugado y que el usuario no tenga predicción
     # TODO: Leer body (id_usuario, local, visitante)
-    return jsonify({"mensaje": "Predicción guardada"}), 201
+
+    body = request.get_json()
+
+    if body.get('id_usuario') == None or body.get('local') == None or body.get('visitante') == None:
+        return ERRORS["MISSING_REQUIRED_FIELDS"]("No mandaste los campos obligatorios para crear una prediccion")
+
+    partido_response = obtener_partido(id)
+    usuario_response = obtener_usuario(body.get('id_usuario'))
+
+    # Reviso que las entradas del partido y usuario esten OK y existan.
+    if partido_response[1] != 200:
+        return partido_response
+    
+    if usuario_response[1] != 200:
+        return usuario_response
+    
+    # Reviso que la prediccion sea unica para ese usuario.
+    query = f"SELECT * FROM predicciones WHERE usuario_id = {body.get('id_usuario')} AND partido_id = {id}"
+
+    response = execute(query)
+
+    if response == False: return ERRORS["UNKNOWN_ERROR"]("Error al obtener predicciones")
+
+    if len(response) != 0: return ERRORS["CONFLICT"]("Ya tienes una predicción para este partido")
+
+    query = f"INSERT INTO predicciones (usuario_id, partido_id, goles_local, goles_visitante) VALUES ({body.get("id_usuario")}, {id}, {body.get("goles_local")}, {body.get("goles_visitante")})"
+
+    response = execute(query)
+
+    if response == False: return ERRORS["UNKNOWN_ERROR"]("Error al insertar nueva predicción")
+
+    return "", 201
 
 def reemplazar_partido(id):
     return jsonify({"mensaje": "Partido reemplazado completo"}), 200
