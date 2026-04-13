@@ -1,36 +1,45 @@
+CREATE DATABASE IF NOT EXISTS prode;
+
+USE prode;
+
 -- 1. Tabla de Equipos
-CREATE TABLE equipos (
-    id SERIAL PRIMARY KEY,
+CREATE TABLE IF NOT EXISTS equipos (
+    id INT AUTO_INCREMENT PRIMARY KEY,
     nombre VARCHAR(100) NOT NULL UNIQUE
 );
 
 -- 2. Tabla de Usuarios
-CREATE TABLE usuarios (
-    id SERIAL PRIMARY KEY,
+CREATE TABLE IF NOT EXISTS usuarios (
+    id INT AUTO_INCREMENT PRIMARY KEY,
     nombre VARCHAR(100) NOT NULL,
     email VARCHAR(100) UNIQUE NOT NULL
 );
 
 -- 3. Tabla de Partidos
-CREATE TABLE partidos (
-    id SERIAL PRIMARY KEY,
-    local_id INTEGER NOT NULL REFERENCES equipos(id) ON DELETE CASCADE,
-    visitante_id INTEGER NOT NULL REFERENCES equipos(id) ON DELETE CASCADE,
+CREATE TABLE IF NOT EXISTS partidos (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    local_id INT NOT NULL,
+    visitante_id INT NOT NULL,
     fecha TIMESTAMP NOT NULL,
-    goles_local INTEGER DEFAULT NULL,
-    goles_visitante INTEGER DEFAULT NULL,
+    goles_local INT DEFAULT NULL,
+    goles_visitante INT DEFAULT NULL,
     fase VARCHAR(50), -- 'Fase de grupos', 'Octavos', etc.
-    estadio VARCHAR(100)
+    estadio VARCHAR(100),
+
+    FOREIGN KEY (local_id) REFERENCES equipos(id) ON DELETE CASCADE,
+    FOREIGN KEY (visitante_id) REFERENCES equipos(id) ON DELETE CASCADE
 );
 
 -- 4. Tabla de Predicciones
-CREATE TABLE predicciones (
-    id SERIAL PRIMARY KEY,
-    usuario_id INTEGER NOT NULL REFERENCES usuarios(id) ON DELETE CASCADE,
-    partido_id INTEGER NOT NULL REFERENCES partidos(id) ON DELETE CASCADE,
-    goles_local INTEGER NOT NULL,
-    goles_visitante INTEGER NOT NULL,
+CREATE TABLE IF NOT EXISTS predicciones (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    usuario_id INT NOT NULL,
+    partido_id INT NOT NULL,
+    goles_local INT NOT NULL,
+    goles_visitante INT NOT NULL,
     
+    FOREIGN KEY (usuario_id) REFERENCES usuarios(id) ON DELETE CASCADE,
+    FOREIGN KEY (partido_id) REFERENCES partidos(id) ON DELETE CASCADE,
     -- RESTRICCIÓN: Un usuario solo puede tener una predicción por cada partido
     UNIQUE(usuario_id, partido_id)
 );
