@@ -1,4 +1,8 @@
 from flask import request, jsonify
+from constants import FASES
+from errors import ERRORS
+
+from db import execute
 
 def listar_partidos():
     # TODO: Leer filtros (equipo, fecha, fase) y paginación (limit, offset)
@@ -8,9 +12,23 @@ def listar_partidos():
 def crear_partido():
     # TODO: Leer body (equipo_local, equipo_visitante, fecha, fase)
     body = request.get_json()
-    print(body)
+
+    if body.get('equipo_local') == None or body.get('equipo_visitante') == None or body.get('fecha') == None or body.get('fase') == None:
+        return ERRORS["MISSING_REQUIRED_FIELDS"]("No mandaste los campos obligatorios para crear un partido")
     
-    return jsonify({"mensaje": "Partido creado"}), 201
+    if body.get('equipo_local') == body.get('equipo_visitante'):
+        return ERRORS["CONFLICT"]("Los equipos no pueden ser iguales")
+    
+    if body.get('fase') not in FASES:
+        return ERRORS["INVALID_FORMAT"]("La fase no es válida")
+    
+    query = f"INSERT INTO partidos (equipo_local, equipo_visitante, fecha, fase) VALUES ('{body.get('equipo_local')}', '{body.get('equipo_visitante')}', '{body.get('fecha')}', '{body.get('fase')}')"
+
+    response = execute(query)
+
+    if response == False: return ERRORS["UNKNOWN_ERROR"]("Error al crear el partido")
+    
+    return "", 201
 
 def obtener_partido(id):
     # TODO: Buscar partido por ID en DB e incluir el resultado si existe 

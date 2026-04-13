@@ -18,12 +18,17 @@ def get_db_connection():
     return conn
 
 def execute(query):
-    conexion = get_db_connection()
-    cursor = conexion.cursor(dictionary=True) # dictionary=True para que devuelva dicts en vez de tuplas
-
     try:
+        conexion = get_db_connection()
+        cursor = conexion.cursor(dictionary=True) # dictionary=True para que devuelva dicts en vez de tuplas
         cursor.execute(query)
+        conexion.commit()
         resultados = cursor.fetchall()
+
+    except Exception as e:
+        print(f"Error no controlado: {e}")         
+        return False
+
     finally:
         cursor.close()
         conexion.close()
