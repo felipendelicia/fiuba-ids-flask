@@ -39,8 +39,40 @@ def obtener_usuario(id):
     return jsonify({"mensaje": f"Detalle usuario {id}"}), 200
 
 def reemplazar_usuario(id):
-    # TODO: Reemplazar datos del usuario
-    return jsonify({"mensaje": "Usuario reemplazado"}), 200
+
+    body = request.get_json()
+
+    nombre = body.get("nombre")
+    email = body.get("email")
+
+    if not nombre or not email:
+        return ERRORS["MISSING_REQUIRED_FIELDS"]("Nombre y email son requeridos")
+
+    query = f"SELECT * FROM usuarios WHERE id = {id}"
+    response = execute(query)
+
+    if response == False:
+        return ERRORS["UNKNOWN_ERROR"]("Error al obtener usuarios")
+
+    if len(response) == 0:
+        return ERRORS["NOT_FOUND"](f"Usuario con ID {id} no encontrado")
+
+    query = f"SELECT * FROM usuarios WHERE email = '{email}' AND id != {id}"
+    response = execute(query)
+
+    if response == False:
+        return ERRORS["UNKNOWN_ERROR"]("Error al verificar email")
+
+    if len(response) != 0:
+        return ERRORS["CONFLICT"]("Email ya registrado en otro usuario")
+
+    query = f"UPDATE usuarios SET nombre = '{nombre}', email = '{email}' WHERE id = {id}"
+    response = execute(query)
+
+    if response == False:
+        return ERRORS["UNKNOWN_ERROR"]("Error al actualizar usuario")
+
+    return "", 204
 
 def eliminar_usuario(id):
     # TODO: Eliminar usuario por ID
