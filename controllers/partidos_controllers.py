@@ -42,6 +42,20 @@ def eliminar_partido(id):
 
 def cargar_resultado(id):
     # TODO: Leer body (goles_local, goles_visitante) y actualizar DB 
+    body = request.get_json()
+
+    if body.get('goles_local') == None or body.get('goles_visitante') == None:
+        return ERRORS["MISSING_REQUIERED_FIELDS"]("No mandaste los campos obligatorios para cargar/actualizar el resultado")
+    partido_response = obtener_partido(id)
+    if partido_response[1] != 200
+        return partido_response
+    
+    query = f"UPDATE partidos SET goles_local = {goles_local}, goles_visitante = {goles_visitante} WHERE id = {id}"
+
+    response = execute(query)
+
+    if response == False: return ERRORS["UNKNOW_ERROR"]("Error al actualizar el resultado")
+
     return jsonify({"mensaje": "Resultado actualizado"}), 200
 
 def registrar_prediccion(id:int):
