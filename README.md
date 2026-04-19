@@ -6,7 +6,7 @@
 - Ronny Mamani Torrez 114779
 - Felipe Nahuel Delicia 115775
 - Dante Apellidos Padron
-- Nombre Apellidos Padron
+- Leonardo Suarez Hans 115120
 - Nombre Apellidos Padron
 - Nombre Apellidos Padron 
 
