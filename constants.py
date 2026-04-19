@@ -1,1 +1,1 @@
-FASES=["FASE_GRUPOS", "OCTAVOS", "CUARTOS", "SEMIFINALES", "FINALES"]
+FASES = ["grupos", "dieciseisavos", "octavos", "cuartos", "semis", "final"]
